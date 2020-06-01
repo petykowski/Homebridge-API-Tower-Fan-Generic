@@ -1,0 +1,13 @@
+[Unit]
+Description=Start Homebridge Flask API Server for Tower Fan
+
+[Service]
+ExecStart=sudo /usr/bin/python3 src/main.py
+WorkingDirectory=/home/pi/Development/Homebridge-API-Tower-Fan-Generic
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=default.target
