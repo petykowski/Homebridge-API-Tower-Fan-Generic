@@ -146,7 +146,7 @@ def setSwingMode():
 
   if value == 1:
     print("Turning on swing mode")
-    setServoAngle(80)
+    setServoAngle(120)
   elif value == 0:
     print("Turning off swing mode")
     setServoAngle(0)
