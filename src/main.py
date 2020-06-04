@@ -8,11 +8,9 @@ from flask import request
 from flask_api import FlaskAPI
 
 
-# Configure Servos
+# Configure GPIO
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(11, GPIO.OUT)
-servo1 = GPIO.PWM(11,50)
-servo1.start(0)
 
 # Configure Paths
 path_to_dir = os.path.dirname(os.path.abspath(__file__))
@@ -80,6 +78,18 @@ def setServoAngle(angle):
   servo1.ChangeDutyCycle(0)
 
 
+def setRelayStateTo(value):
+  '''
+  Sets the GPIO pin to LOW or HIGH based on the provided relay
+  state value.
+  '''
+
+  if value == 1:
+    GPIO.output(11, GPIO.HIGH)
+  elif value == 0:
+    GPIO.output(11, GPIO.LOW)
+
+
 #############
 # FLASK API #
 #############
@@ -105,7 +115,8 @@ def getActive():
 @app.route('/setActive', methods=["POST"])
 def setActive():
   '''
-  Sets the requested Active value
+  Sets the requested Active value. This API does not currently make 
+  any changes to the fan's power.
   '''
 
   value = int(request.args['Active'])
@@ -146,10 +157,10 @@ def setSwingMode():
 
   if value == 1:
     print("Turning on swing mode")
-    setServoAngle(120)
+    setRelayStateTo(1)
   elif value == 0:
     print("Turning off swing mode")
-    setServoAngle(0)
+    setRelayStateTo(0)
 
   setCharacteristicValueFor('SwingMode', value)
 
@@ -171,7 +182,6 @@ def shutdown():
   func = request.environ.get('werkzeug.server.shutdown')
   if func is None:
       raise RuntimeError('Not running with the Werkzeug Server')
-  servo1.stop()
   GPIO.cleanup()
   func()
   return 'Server shutting down...'
