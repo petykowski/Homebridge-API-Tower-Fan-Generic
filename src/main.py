@@ -168,6 +168,22 @@ def setSwingMode():
 
 
 '''
+API: Current Temperature
+Method: GET
+Usage: Represents current temperature for the sensor
+'''
+
+@app.route('/getCurrentTemperature', methods=["GET"])
+def getCurrentTemperature():
+  '''
+  Returns the current temperature value
+  '''
+
+  current_temperature = 17.8
+  return {'response': current_temperature}
+
+
+'''
 API: Shutdown
 Method: GET
 Usage: Safely shutdown server and Raspberry Pi
