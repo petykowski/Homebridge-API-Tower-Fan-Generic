@@ -2,6 +2,7 @@
 import time
 import shelve
 import os.path
+import Adafruit_DHT
 import RPi.GPIO as GPIO
 
 from flask import request
@@ -11,6 +12,11 @@ from flask_api import FlaskAPI
 # Configure GPIO
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(11, GPIO.OUT)
+
+# Adafruit usesBCM numbering
+pin_temperature = 4
+sensor_temperature = Adafruit_DHT.DHT22
+
 
 # Configure Paths
 path_to_dir = os.path.dirname(os.path.abspath(__file__))
@@ -179,8 +185,24 @@ def getCurrentTemperature():
   Returns the current temperature value
   '''
 
-  current_temperature = 17.8
-  return {'response': current_temperature}
+  humidity, temperature = Adafruit_DHT.read_retry(sensor_temperature, pin_temperature)
+  return {'response': temperature}
+
+
+'''
+API: Humidity
+Method: GET
+Usage: Represents current humidity reading for the sensor
+'''
+
+@app.route('/getCurrentRelativeHumidity', methods=["GET"])
+def getCurrentRelativeHumidity():
+  '''
+  Returns the current temperature value
+  '''
+
+  humidity, temperature = Adafruit_DHT.read_retry(sensor_temperature, pin_temperature)
+  return {'response': humidity}
 
 
 '''
